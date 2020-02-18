@@ -16,7 +16,6 @@ public class App
         {
             ReentrantLock locker = new ReentrantLock(); // создаем заглушку
 
-
             Counter counter = new Counter();
             ExecutorService threadPool = Executors.newFixedThreadPool(3);
 
