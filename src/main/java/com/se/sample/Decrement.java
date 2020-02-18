@@ -9,7 +9,7 @@ public class Decrement implements Runnable {
     private String name;
 
 
-    public Decrement(String name, Counter counter, ReentrantLock locker ) {
+    public Decrement(String name, Counter counter, ReentrantLock locker) {
         this.locker = locker;
         this.counter = counter;
         this.name = name;
@@ -17,33 +17,40 @@ public class Decrement implements Runnable {
 
     @Override
     public void run() {
-;
         try {
             while (this.counter.continueProducing) {
-                locker.lock();
-
-                 if(!this.counter.continueProducing){
-                    System.out.println(String.format("Останавливаем в %s", name));
-                    locker.unlock();
-
+                if (ThreadHelper.checkBreakCondition(locker, name, this.counter.continueProducing))
                     break;
-                }
 
-             //   System.out.println(String.format("== Декрементим в %s . Тек. значение: : %s, Декремент на : %s ",name, counter.get(),counter.getIncrementValue()));
                 counter.decrement(counter.getDecrementValue(), this.name);
-                locker.unlock();
-
                 Thread.sleep(1000);
             }
 
-            System.out.println(String.format("Counter value : '%s' : Thread : '%s' . Finishing", counter.getDecrementValue(),  name  ));
+            System.out.println(String.format("Counter value : '%s' : Thread : '%s' . Finishing", counter.getDecrementValue(), name));
 
         } catch (InterruptedException ex) {
             ex.printStackTrace();
+
+        } finally {
+            if (locker.isLocked()) {
+                locker.unlock();
+            }
         }
 
-        finally{
-          //  locker.unlock();
+    }
+
+    private boolean checkBreakCondition() {
+
+        locker.lock();
+
+        if (!this.counter.continueProducing) {
+            System.out.println(String.format("Останавливаем в %s", name));
+            locker.unlock();
+
+            return true;
         }
+
+        locker.unlock();
+        return false;
     }
 }
