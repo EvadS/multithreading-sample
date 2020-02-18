@@ -17,7 +17,8 @@ public class App
             ReentrantLock locker = new ReentrantLock(); // создаем заглушку
 
             Counter counter = new Counter();
-            ExecutorService threadPool = Executors.newFixedThreadPool(3);
+            int cores = Runtime.getRuntime().availableProcessors();
+            ExecutorService threadPool = Executors.newFixedThreadPool(cores);
 
             threadPool.execute(new Decrement("Decrement 1", counter,locker));
             threadPool.execute(new Increment("Increment 2", counter,locker));
@@ -39,6 +40,10 @@ public class App
             threadPool.execute(new Increment("Increment 6", counter,locker));
 
             threadPool.shutdown();
+
+            while(true){
+
+            }
         }
         catch (Exception e)
         {

@@ -7,6 +7,7 @@ mvn clean package
 ## Run 
 java -jar target/counter.jar
 
+ visualvm 
 
 -----------------------------------------
 Create a variable(counter) that can be shared by all the clients, the initial value of the counter is 50.

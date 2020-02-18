@@ -21,20 +21,21 @@ public class Increment implements  Runnable {
 
             while(true)
             {
-               // locker.lock();
+                locker.lock();
                 if(!this.counter.continueProducing){
                     System.out.println(String.format("Останавливаем в %s", name));
-                //    locker.unlock();
+                    locker.unlock();
                     break;
                 }
 
-               // locker.unlock();
+                locker.unlock();
                 counter.increment(counter.getIncrementValue(),this.name);
 
                 Thread.sleep(1000);
             }
 
             System.out.println(name + " finished its job; terminating...");
+
         }
         catch (InterruptedException ex)
         {
