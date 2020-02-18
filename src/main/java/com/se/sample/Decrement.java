@@ -19,17 +19,16 @@ public class Decrement implements Runnable {
     public void run() {
 ;
         try {
-            while (true) {
+            while (this.counter.continueProducing) {
 
-               locker.lock();
                if(!this.counter.continueProducing){
                     System.out.println(String.format("Останавливаем в %s", name));
                     break;
                 }
 
-                System.out.println(String.format("== Декрементим в %s . Тек. значение: : %s, Декремент на : %s ",name, counter.get(),counter.getIncrementValue()));
-                counter.increment(counter.getIncrementValue(), this.name);
-                locker.unlock();
+             //   System.out.println(String.format("== Декрементим в %s . Тек. значение: : %s, Декремент на : %s ",name, counter.get(),counter.getIncrementValue()));
+                counter.decrement(counter.getDecrementValue(), this.name);
+                //locker.unlock();
 
                 Thread.sleep(1000);
             }
@@ -40,7 +39,7 @@ public class Decrement implements Runnable {
         }
 
         finally{
-            locker.unlock();
+          //  locker.unlock();
         }
     }
 }

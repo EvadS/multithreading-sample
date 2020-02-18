@@ -1,41 +1,46 @@
 package com.se.sample;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Counter {
 
     private final Integer decrementValue = 8;
     private final Integer incrementValue = 5;
     public volatile Boolean continueProducing = Boolean.TRUE;
-    private Integer counter = 50;
+    private AtomicInteger counter =  new AtomicInteger(50);
 
-    public synchronized Integer decrement(Integer value, String name )  {
-
-        counter -= value;
+    public synchronized int decrement(int value, String name )  {
+        System.out.println(String.format("Decrement. Thread : %s ,  Счетчик   : %s, decrement val : %s ",name,  counter.get(), decrementValue));
+        counter.updateAndGet(i -> i - value);
 
         if (checkCounterValue(name))
-            return counter;
+            return counter.get();
 
-        System.out.println(String.format("Счетчик уменьшен на  : %s", value));
-        System.out.println(String.format("Значение счетчика    : %s ", counter));
+        System.out.println(String.format(name + " Счетчик уменьшен на  : %s", value));
+        System.out.println(String.format(name +  " Значение счетчика    : %s ", counter));
         System.out.println("================================================");
 
-        return counter;
+        return counter.get();
     }
 
     public synchronized Integer increment(Integer value,String name )  {
-
-        counter += value;
+        System.out.println(String.format("increment. Thread : %s ,  Счетчик  : %s, incr  %s",name,  counter.get(),incrementValue));
+        counter.updateAndGet(i -> i + value);
 
         if (checkCounterValue(name))
-            return counter;
+            return counter.get();;
 
-        System.out.println(String.format("Счетчик увеличен на : %s ", value));
-        System.out.println(String.format("Значение счетчика   : %s ", counter));
+        System.out.println(String.format(name + " Счетчик увеличен на : %s ", value));
+        System.out.println(String.format(name + " Значение счетчика   : %s ", counter));
         System.out.println("================================================");
-        return counter;
+        return counter.get();
     }
 
     private boolean checkCounterValue(String name) {
-        if (counter < 0 || counter > 100) {
+        if(!continueProducing){
+            return  false;
+        }
+        if (counter.get() < 0 || counter.get() > 100) {
             System.out.println(String.format("Вышли за пределы в : %s, счетчик: %s", name, counter));
 
             continueProducing = Boolean.FALSE;
@@ -46,7 +51,7 @@ public class Counter {
     }
 
     public synchronized Integer get() {
-        return counter;
+        return counter.get();
     }
 
     public Integer getDecrementValue() {

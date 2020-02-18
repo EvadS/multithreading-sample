@@ -21,15 +21,15 @@ public class Increment implements  Runnable {
 
             while(true)
             {
-                locker.lock();
+               // locker.lock();
                 if(!this.counter.continueProducing){
                     System.out.println(String.format("Останавливаем в %s", name));
+                //    locker.unlock();
                     break;
                 }
 
-                System.out.println(String.format("== Инкрементим в %s . Тек. значение: : %s, инкремент на %s  ",name, counter.get(),counter.getIncrementValue()));
+               // locker.unlock();
                 counter.increment(counter.getIncrementValue(),this.name);
-                locker.unlock();
 
                 Thread.sleep(1000);
             }
@@ -39,9 +39,6 @@ public class Increment implements  Runnable {
         catch (InterruptedException ex)
         {
             ex.printStackTrace();
-        }
-        finally {
-            locker.unlock();
         }
     }
 }
